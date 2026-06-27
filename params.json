@@ -1,0 +1,15 @@
+{
+  "mu": 41422.0,
+  "sigma": 21865.0,
+  "batas_waspada": 63287.0,
+  "batas_siaga": 85152.0,
+  "best_order": "SARIMA(2,0,2)(1,0,1,52)",
+  "aic": 8112.93,
+  "bic": 8140.65,
+  "n_weeks": 443,
+  "periode_start": "2018-01-01",
+  "periode_end": "2026-06-22",
+  "last_fs_score": 34.2,
+  "last_fs_label": "Waspada",
+  "last_harga": 45200.0
+}
