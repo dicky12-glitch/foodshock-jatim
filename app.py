@@ -216,20 +216,6 @@ alarm_class = {
 }
 ac, ae, acol, at, ad = alarm_class[fs_label]
 st.markdown(f"""
-<div class="alarm-box {ac}">
-  <div class="alarm-title" style="color:{acol}">{ae} {at}</div>
-  <div class="alarm-desc">{ad}</div>
-</div>
-""", unsafe_allow_html=True)
-
-# ── Metrik 4 kolom ────────────────────────────────────────
-c1, c2, c3, c4 = st.columns(4)
-delta_arrow = "▲" if delta_pct > 0 else "▼"
-delta_col   = "#DC2626" if delta_pct > 0 else "#1A7A4A"
-fs_col      = "#DC2626" if fs_score>=67 else ("#D97706" if fs_score>=34 else "#1A7A4A")
-fc_next     = df_fore.iloc[0]
-
-st.markdown(f"""
 <div class="hero">
   <div class="hero-body">
     <div class="hero-text">
@@ -259,6 +245,21 @@ st.markdown(f"""
   </div>
 </div>
 """, unsafe_allow_html=True)
+
+st.markdown(f"""
+<div class="alarm-box {ac}">
+  <div class="alarm-title" style="color:{acol}">{ae} {at}</div>
+  <div class="alarm-desc">{ad}</div>
+</div>
+""", unsafe_allow_html=True)
+
+# ── Metrik 4 kolom ────────────────────────────────────────
+c1, c2, c3, c4 = st.columns(4)
+delta_arrow = "▲" if delta_pct > 0 else "▼"
+delta_col   = "#DC2626" if delta_pct > 0 else "#1A7A4A"
+fs_col      = "#DC2626" if fs_score>=67 else ("#D97706" if fs_score>=34 else "#1A7A4A")
+fc_next     = df_fore.iloc[0]
+
 
 with c1:
     st.markdown(f"""
