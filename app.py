@@ -201,36 +201,6 @@ prev_harga = prev['harga']
 delta_pct  = ((last_harga - prev_harga) / prev_harga) * 100
 
 # ── Hero ──────────────────────────────────────────────────
-st.markdown(f"""
-<div class="hero">
-  <div class="hero-body">
-    <div class="hero-text">
-      <h1>FoodShock<span style="color:#FF6B4A">-</span>Jatim</h1>
-      <p style="font-size:1.05rem;color:rgba(255,255,255,0.85);margin:0.5rem 0 1rem">
-        Pantau risiko lonjakan harga <b style="color:white">Cabai Rawit Merah</b>
-        di Jawa Timur minggu ini
-      </p>
-      <div class="hero-status-row">
-        <div class="hero-stat">
-          <span class="hero-stat-label">Harga minggu ini</span>
-          <span class="hero-stat-val">Rp {last_harga:,.0f}</span>
-        </div>
-        <div class="hero-divider"></div>
-        <div class="hero-stat">
-          <span class="hero-stat-label">Kondisi pasar</span>
-          <span class="hero-stat-val" style="color:{fs_col}">{fs_label}</span>
-        </div>
-        <div class="hero-divider"></div>
-        <div class="hero-stat">
-          <span class="hero-stat-label">Diperbarui</span>
-          <span class="hero-stat-val">{last['tanggal'].strftime('%d %b %Y')}</span>
-        </div>
-      </div>
-    </div>
-    <div class="hero-icon">🌶️</div>
-  </div>
-</div>
-""", unsafe_allow_html=True)
 
 # ── Alarm utama ───────────────────────────────────────────
 alarm_class = {
@@ -258,6 +228,37 @@ delta_arrow = "▲" if delta_pct > 0 else "▼"
 delta_col   = "#DC2626" if delta_pct > 0 else "#1A7A4A"
 fs_col      = "#DC2626" if fs_score>=67 else ("#D97706" if fs_score>=34 else "#1A7A4A")
 fc_next     = df_fore.iloc[0]
+
+st.markdown(f"""
+<div class="hero">
+  <div class="hero-body">
+    <div class="hero-text">
+      <h1>FoodShock<span style="color:#FF6B4A">-</span>Jatim</h1>
+      <p style="font-size:1.05rem;color:rgba(255,255,255,0.85);margin:0.5rem 0 1rem">
+        Pantau risiko lonjakan harga <b style="color:white">Cabai Rawit Merah</b>
+        di Jawa Timur minggu ini
+      </p>
+      <div class="hero-status-row">
+        <div class="hero-stat">
+          <span class="hero-stat-label">Harga minggu ini</span>
+          <span class="hero-stat-val">Rp {last_harga:,.0f}</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">Kondisi pasar</span>
+          <span class="hero-stat-val" style="color:{"#DC2626" if fs_label=="Siaga" else "#D97706" if fs_label=="Waspada" else "#1A7A4A"}">{fs_label}</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">Diperbarui</span>
+          <span class="hero-stat-val">{last['tanggal'].strftime('%d %b %Y')}</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-icon">🌶️</div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
 
 with c1:
     st.markdown(f"""
