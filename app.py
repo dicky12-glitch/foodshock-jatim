@@ -31,21 +31,35 @@ html, body, [class*="css"] {
     border: 1px solid rgba(255,100,70,0.2);
     box-shadow: 0 8px 32px rgba(192,57,43,0.25);
 }
-.hero-top {
+.hero-status-row {
     display: flex;
-    gap: 8px;
-    margin-bottom: 1.2rem;
+    align-items: center;
+    gap: 1.5rem;
     flex-wrap: wrap;
+    margin-top: 0.5rem;
 }
-.hero-tag {
-    background: rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.85);
-    font-size: 0.72rem;
+.hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.hero-stat-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     font-weight: 500;
-    padding: 3px 10px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.15);
-    letter-spacing: 0.03em;
+}
+.hero-stat-val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: white;
+}
+.hero-divider {
+    width: 1px;
+    height: 32px;
+    background: rgba(255,255,255,0.2);
 }
 .hero-body {
     display: flex;
@@ -53,14 +67,7 @@ html, body, [class*="css"] {
     justify-content: space-between;
 }
 .hero-text { flex: 1; }
-.hero-eyebrow {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: #FF9F7A;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 0.5rem;
-}
+
 .hero h1 {
     font-family: 'Space Grotesk', sans-serif;
     color: white;
@@ -196,18 +203,29 @@ delta_pct  = ((last_harga - prev_harga) / prev_harga) * 100
 # ── Hero ──────────────────────────────────────────────────
 st.markdown(f"""
 <div class="hero">
-  <div class="hero-top">
-    <span class="hero-tag">Jawa Timur</span>
-    <span class="hero-tag">2019–Sekarang</span>
-    <span class="hero-tag">SARIMA + Isolation Forest</span>
-  </div>
   <div class="hero-body">
     <div class="hero-text">
-      <div class="hero-eyebrow">Sistem Peringatan Dini Pangan</div>
       <h1>FoodShock<span style="color:#FF6B4A">-</span>Jatim</h1>
-      <p>Deteksi dini risiko lonjakan harga<br>
-         <b style="color:white">Cabai Rawit Merah</b> Jawa Timur
-         berbasis data mingguan PIHPS</p>
+      <p style="font-size:1.05rem;color:rgba(255,255,255,0.85);margin:0.5rem 0 1rem">
+        Pantau risiko lonjakan harga <b style="color:white">Cabai Rawit Merah</b>
+        di Jawa Timur minggu ini
+      </p>
+      <div class="hero-status-row">
+        <div class="hero-stat">
+          <span class="hero-stat-label">Harga minggu ini</span>
+          <span class="hero-stat-val">Rp {last_harga:,.0f}</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">Kondisi pasar</span>
+          <span class="hero-stat-val" style="color:{fs_col}">{fs_label}</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-label">Diperbarui</span>
+          <span class="hero-stat-val">{last['tanggal'].strftime('%d %b %Y')}</span>
+        </div>
+      </div>
     </div>
     <div class="hero-icon">🌶️</div>
   </div>
@@ -217,14 +235,14 @@ st.markdown(f"""
 # ── Alarm utama ───────────────────────────────────────────
 alarm_class = {
     'Aman'   : ('alarm-aman',    '✅', '#1A7A4A',
-                 'Kondisi Aman',
-                 'Tidak terdeteksi guncangan harga abnormal minggu ini. Pantau terus minggu depan.'),
+                 '✅ Kondisi Pasar Normal',
+                 'Harga cabai rawit merah minggu ini bergerak dalam batas wajar. Tidak ada indikasi lonjakan untuk minggu depan.'),
     'Waspada': ('alarm-waspada', '⚠️', '#D97706',
-                 'Waspada — Potensi Guncangan Minggu Depan',
-                 'Terdeteksi anomali harga minggu ini. Disarankan memantau pasokan dan distribusi.'),
+                 '⚠️ Perlu Diwaspadai — Pantau Minggu Depan',
+                 'Harga bergerak di luar pola biasa minggu ini. Disarankan memantau pasokan dan jalur distribusi cabai rawit.'),
     'Siaga'  : ('alarm-siaga',   '🚨', '#DC2626',
-                 'SIAGA — Risiko Lonjakan Tinggi Minggu Depan',
-                 'Anomali harga signifikan terdeteksi. Segera koordinasi operasi pasar dan distribusi.'),
+                 '🚨 SIAGA — Risiko Lonjakan Harga Minggu Depan',
+                 'Terdeteksi pola harga yang tidak wajar minggu ini. Berdasarkan data historis, kondisi ini sering diikuti lonjakan harga minggu berikutnya. Segera koordinasi dengan dinas terkait.'),
 }
 ac, ae, acol, at, ad = alarm_class[fs_label]
 st.markdown(f"""
@@ -289,17 +307,17 @@ with c4:
 
 # ── Tab navigasi ──────────────────────────────────────────
 tab1, tab2, tab3, tab4 = st.tabs([
-    "📈  Harga & Forecast",
-    "⚡  FoodShock Score",
-    "🔬  Diagnostik Model",
-    "📋  Data Lengkap"
+    "📈  Harga & Prediksi",
+    "⚡  Tingkat Risiko",
+    "🔬  Detail Teknis",
+    "📋  Unduh Data"
 ])
 
 # ═══════════════════════════════════════════
 # TAB 1 — HARGA & FORECAST
 # ═══════════════════════════════════════════
 with tab1:
-    st.markdown('<div class="section-title">Harga Aktual + Forecast 4 Minggu</div>',
+    st.markdown('<div class="section-title">Pergerakan Harga & Prediksi 4 Minggu ke Depan</div>',
                 unsafe_allow_html=True)
 
     df_plot = df_hist.tail(52).copy()
@@ -421,7 +439,7 @@ with tab1:
     st.plotly_chart(fig, use_container_width=True)
 
     # Kartu forecast 4 minggu
-    st.markdown('<div class="section-title">Detail Forecast 4 Minggu</div>',
+    st.markdown('<div class="section-title">Prediksi Harga 4 Minggu ke Depan</div>',
                 unsafe_allow_html=True)
     cols = st.columns(4)
     emoji_map = {'Aman': '🟢', 'Waspada': '🟡', 'Siaga': '🔴'}
@@ -452,7 +470,7 @@ with tab1:
 # TAB 2 — FOODSHOCK SCORE
 # ═══════════════════════════════════════════
 with tab2:
-    st.markdown('<div class="section-title">FoodShock Score — 52 Minggu Terakhir</div>',
+    st.markdown('<div class="section-title">Riwayat Tingkat Risiko — 1 Tahun Terakhir</div>',
                 unsafe_allow_html=True)
 
     df_fs     = df_hist.tail(52).copy()
@@ -514,45 +532,44 @@ with tab2:
         st.markdown("""
         <div style="background:#F0FBF4;border-radius:10px;padding:12px 14px;
                     border-left:3px solid #1A7A4A">
-          <b style="color:#1A7A4A">🟢 Aman (0–33)</b><br>
+          <b style="color:#1A7A4A">🟢 Aman</b><br>
           <span style="font-size:0.82rem;color:#555">
-            Residual dalam batas normal. Tidak ada indikasi guncangan.
+            Harga bergerak normal. Tidak ada tanda-tanda lonjakan.
           </span>
         </div>""", unsafe_allow_html=True)
     with l2:
         st.markdown("""
         <div style="background:#FFFBEB;border-radius:10px;padding:12px 14px;
                     border-left:3px solid #D97706">
-          <b style="color:#D97706">🟡 Waspada (34–66)</b><br>
+          <b style="color:#D97706">🟡 Waspada</b><br>
           <span style="font-size:0.82rem;color:#555">
-            Pola residual mulai tidak biasa. Pantau pasokan.
+            Ada pergerakan harga yang tidak biasa. Perlu dipantau.
           </span>
         </div>""", unsafe_allow_html=True)
     with l3:
         st.markdown("""
         <div style="background:#FFF5F5;border-radius:10px;padding:12px 14px;
                     border-left:3px solid #DC2626">
-          <b style="color:#DC2626">🔴 Siaga (67–100)</b><br>
+          <b style="color:#DC2626">🔴 Siaga</b><br>
           <span style="font-size:0.82rem;color:#555">
-            Anomali signifikan. Rekomendasikan intervensi pasar.
+            Risiko lonjakan harga tinggi. Segera antisipasi.
           </span>
         </div>""", unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title">Cara Membaca FoodShock Score</div>',
+    st.markdown('<div class="section-title">Apa Artinya Tingkat Risiko Ini?</div>',
                 unsafe_allow_html=True)
     st.markdown("""
     <div style="background:white;border:1px solid #E8E8E8;border-radius:12px;
                 padding:1.2rem 1.4rem;font-size:0.87rem;line-height:1.8;color:#444">
-      <b>FoodShock Score</b> adalah indeks 0–100 yang mengukur seberapa <i>abnormal</i>
-      perilaku harga cabai rawit merah minggu ini dibandingkan pola normalnya.<br><br>
-      <b>Pipeline:</b><br>
-      1. SARIMA menghitung harga "normal" yang diharapkan (fitted value)<br>
-      2. Residual = Harga Aktual − Fitted → komponen yang tidak bisa dijelaskan tren & musiman<br>
-      3. Isolation Forest menilai apakah residual minggu ini sangat berbeda dari pola historis<br>
-      4. Skor dinormalisasi 0–100: makin tinggi = makin anomali<br><br>
-      <b style="color:#DC2626">⚠️ Penting:</b>
-      FoodShock Score minggu ini adalah <b>sinyal peringatan untuk minggu depan</b>.
-      Score tinggi = waspadai lonjakan harga dalam 1–2 minggu ke depan.
+      Tingkat risiko dihitung dengan membandingkan harga minggu ini
+      terhadap pola historis harga cabai rawit Jawa Timur sejak 2019.<br><br>
+      🟢 <b>Aman</b> — Harga bergerak sesuai pola biasa. Tidak perlu tindakan khusus.<br>
+      🟡 <b>Waspada</b> — Ada pergerakan yang tidak biasa. Pantau perkembangan minggu depan.<br>
+      🔴 <b>Siaga</b> — Terdeteksi pola yang sering mendahului lonjakan harga.
+      Disarankan segera koordinasi dengan distributor atau dinas terkait.<br><br>
+      <b style="color:#DC2626">⚠️ Catatan:</b>
+      Tingkat risiko minggu ini adalah <b>sinyal untuk minggu depan</b> —
+      bukan prediksi pasti. Gunakan sebagai bahan pertimbangan, bukan keputusan tunggal.
     </div>
     """, unsafe_allow_html=True)
 
@@ -560,7 +577,7 @@ with tab2:
 # TAB 3 — DIAGNOSTIK MODEL
 # ═══════════════════════════════════════════
 with tab3:
-    st.markdown('<div class="section-title">Informasi Model</div>',
+    st.markdown('<div class="section-title">Informasi Teknis Model</div>',
                 unsafe_allow_html=True)
 
     i1, i2, i3, i4 = st.columns(4)
@@ -727,7 +744,7 @@ with tab3:
 # TAB 4 — DATA LENGKAP
 # ═══════════════════════════════════════════
 with tab4:
-    st.markdown('<div class="section-title">Data Historis Lengkap</div>',
+    st.markdown('<div class="section-title">Riwayat Data Harga</div>',
                 unsafe_allow_html=True)
 
     fc1, fc2, fc3 = st.columns([2, 2, 1])
@@ -742,13 +759,13 @@ with tab4:
         )
     with fc2:
         filter_label = st.multiselect(
-            "Filter status FoodShock",
+            "Filter kondisi",
             options=['Aman', 'Waspada', 'Siaga'],
             default=['Aman', 'Waspada', 'Siaga']
         )
     with fc3:
         st.markdown("<br>", unsafe_allow_html=True)
-        show_all = st.checkbox("Semua kolom", value=False)
+        show_all = st.checkbox("Tampilkan detail teknis", value=False)
 
     df_show = df_hist.copy()
     if len(date_range) == 2:
